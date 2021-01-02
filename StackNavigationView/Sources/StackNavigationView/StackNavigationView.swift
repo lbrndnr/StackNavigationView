@@ -35,56 +35,47 @@ extension EnvironmentValues {
     
 }
 
-public struct StackNavigationView<V: Hashable, C1: View, C2: View>: View {
+public struct StackNavigationView<V: Hashable, Content: View>: View {
     
-    private var content: () -> TupleView<(C1, C2)>
+    private var content: () -> Content
     
     @State private var pushed: [(AnyView?, V?)]
     @State private var popped = [(AnyView?, V?)]()
     
-    var canGoBack: Bool { pushed.count > 1 }
-    var canGoForward: Bool { popped.count > 0 }
-    var selection: Binding<V?>?
+    private var canGoBack: Bool { pushed.count > 1 }
+    private var canGoForward: Bool { popped.count > 0 }
+    private var selection: Binding<V?>?
     
     public var body: some View {
-        let subviews = content().value
-        
-        return NavigationView {
-            subviews.0
-            subviews.1
-        }
-        .environment(\.push, push)
-        .environment(\.currentView, pushed.last?.0)
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button(action: goBack, label: {
-                    Image(systemName: "chevron.left")
-                })
-                .disabled(!canGoBack)
+        return NavigationView(content: content)
+            .environment(\.push, push)
+            .environment(\.currentView, pushed.last?.0)
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button(action: goBack, label: {
+                        Image(systemName: "chevron.left")
+                    })
+                    .disabled(!canGoBack)
+                }
+                ToolbarItem(placement: .navigation) {
+                    Button(action: goForward, label: {
+                        Image(systemName: "chevron.right")
+                    })
+                    .disabled(!canGoForward)
+                }
             }
-            ToolbarItem(placement: .navigation) {
-                Button(action: goForward, label: {
-                    Image(systemName: "chevron.right")
-                })
-                .disabled(!canGoForward)
-            }
-        }
     }
     
-    public init(@ViewBuilder content: @escaping () -> TupleView<(C1, C2)>) {
+    public init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self._pushed = State(initialValue: [])
     }
     
-    public init(selection: Binding<V?>, @ViewBuilder content: @escaping () -> TupleView<(C1, C2)>) {
+    public init(selection: Binding<V?>, @ViewBuilder content: @escaping () -> Content) {
         self.content = content
         self.selection = selection
         self._pushed = State(initialValue: [(nil, selection.wrappedValue)])
     }
-    
-//    public init(@ViewBuilder content: @escaping () -> C1) where C2 == EmptyView {
-//        self.content = { TupleView((content(), EmptyView())) }
-//    }
     
     private func push(_ content: AnyView, tag: Any?) {
         guard let tag = tag as? V? else { preconditionFailure() }
