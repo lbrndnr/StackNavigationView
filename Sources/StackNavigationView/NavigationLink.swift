@@ -79,7 +79,7 @@ extension SidebarNavigationLink where Label == Text {
     
 }
 
-public struct StackNavigationLink<Label, Destination, V: Hashable> : View where Label : View, Destination : View {
+public struct StackNavigationLink<Label, Destination> : View where Label : View, Destination : View {
     
     var label: () -> Label
     var destination: Destination
@@ -93,7 +93,7 @@ public struct StackNavigationLink<Label, Destination, V: Hashable> : View where 
     }
 
     /// Creates an instance that presents `destination`.
-    public init(destination: Destination, @ViewBuilder label: @escaping () -> Label) where V == Int {
+    public init(destination: Destination, @ViewBuilder label: @escaping () -> Label) {
         self.label = label
         self.destination = destination
     }
