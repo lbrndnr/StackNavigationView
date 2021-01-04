@@ -7,16 +7,22 @@
 
 import SwiftUI
 
+typealias Push = (AnyView, Any?) -> ()
+struct PushKey: EnvironmentKey {
+    
+    static let defaultValue: Push = { _, _ in }
+    
+}
+
 struct CurrentViewKey: EnvironmentKey {
     
     static let defaultValue: AnyView? = nil
     
 }
 
-typealias Push = (AnyView, Any?) -> ()
-struct PushKey: EnvironmentKey {
+struct ModalViewKey: EnvironmentKey {
     
-    static let defaultValue: Push = { _, _ in }
+    static let defaultValue: AnyView? = nil
     
 }
 
@@ -30,6 +36,11 @@ extension EnvironmentValues {
     var currentView: AnyView? {
         get { self[CurrentViewKey.self] }
         set { self[CurrentViewKey.self] = newValue }
+    }
+    
+    var modalView: AnyView? {
+        get { self[ModalViewKey.self] }
+        set { self[ModalViewKey.self] = newValue }
     }
     
 }

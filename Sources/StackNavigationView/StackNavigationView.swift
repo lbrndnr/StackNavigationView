@@ -20,7 +20,7 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
     private var selection: Binding<V?>?
     
     public var body: some View {
-        return NavigationView(content: content)
+        NavigationView(content: content)
             .environment(\.push, push)
             .environment(\.currentView, pushed.last?.0)
             .toolbar {
@@ -29,12 +29,14 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
                         Image(systemName: "chevron.left")
                     })
                     .disabled(!canGoBack)
+                    .keyboardShortcut("[", modifiers: .command)
                 }
                 ToolbarItem(placement: .navigation) {
                     Button(action: goForward, label: {
                         Image(systemName: "chevron.right")
                     })
                     .disabled(!canGoForward)
+                    .keyboardShortcut("]", modifiers: .command)
                 }
             }
     }
@@ -48,6 +50,11 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
         self.content = content
         self.selection = selection
         self._pushed = State(initialValue: [(nil, selection.wrappedValue)])
+    }
+    
+    public func modal<T: View>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> T) -> some View {
+        let view = isPresented.wrappedValue ? AnyView(content()) : nil
+        return environment(\.modalView, view)
     }
     
     private func push(_ content: AnyView, tag: Any?) {

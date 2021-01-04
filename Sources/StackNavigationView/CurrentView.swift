@@ -9,13 +9,15 @@ import SwiftUI
 
 struct CurrentView: View {
     
-    var body: some View { currentView ?? defaultView }
-    
     @Environment(\.currentView) private var currentView: AnyView?
+    @Environment(\.modalView) private var modalView: AnyView?
+    
     private var defaultView: AnyView
     
-    init(defaultView: AnyView) {
-        self.defaultView = defaultView
+    var body: some View { modalView ?? currentView ?? defaultView }
+    
+    init<Content: View>(defaultView: Content) {
+        self.defaultView = AnyView(defaultView)
     }
     
 }

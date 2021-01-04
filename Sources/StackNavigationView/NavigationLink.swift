@@ -22,7 +22,7 @@ public struct SidebarNavigationLink<Label, Destination, V: Hashable> : View wher
                 push(AnyView(destination), tag)
             })
             
-            NavigationLink(label, destination: CurrentView(defaultView: AnyView(destination)), tag: tag, selection: binding)
+            NavigationLink(label, destination: CurrentView(defaultView: destination), tag: tag, selection: binding)
         }
     }
 
