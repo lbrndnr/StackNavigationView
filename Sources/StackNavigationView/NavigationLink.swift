@@ -79,16 +79,24 @@ extension SidebarNavigationLink where Label == Text {
     
 }
 
-public struct StackNavigationLink<Label, Destination> : View where Label : View, Destination : View {
+public struct StackNavigationLink<Label: View, Destination: View>: View {
     
-    var label: () -> Label
-    var destination: Destination
+    private var label: () -> Label
+    private var destination: Destination
+    private var wrapInButton = false
     
     @Environment(\.push) private var push
     
     public var body: some View {
-        label().onTapGesture {
+        let action = {
             self.push(AnyView(destination), nil)
+        }
+        
+        if wrapInButton {
+            Button(action: action, label: label)
+        }
+        else {
+            label().onTapGesture(perform: action)
         }
     }
 
@@ -109,5 +117,37 @@ public struct StackNavigationLink<Label, Destination> : View where Label : View,
 //        self.label = label
 //        self.destination = destination
 //    }
+    
+}
+
+extension StackNavigationLink where Label == Text {
+    
+//    /// Creates an instance that presents `destination`, with a `Text` label
+//    /// generated from a title string.
+//    public init(_ titleKey: LocalizedStringKey, destination: Destination)
+//
+//    /// Creates an instance that presents `destination`, with a `Text` label
+//    /// generated from a title string.
+//    public init<S>(_ title: S, destination: Destination) where S : StringProtocol
+//
+//    /// Creates an instance that presents `destination` when active, with a
+//    /// `Text` label generated from a title string.
+//    public init(_ titleKey: LocalizedStringKey, destination: Destination, isActive: Binding<Bool>)
+//
+//    /// Creates an instance that presents `destination` when active, with a
+//    /// `Text` label generated from a title string.
+//    public init<S>(_ title: S, destination: Destination, isActive: Binding<Bool>) where S : StringProtocol
+//
+//    /// Creates an instance that presents `destination` when `selection` is set
+//    /// to `tag`, with a `Text` label generated from a title string.
+//    public init<V>(_ titleKey: LocalizedStringKey, destination: Destination, tag: V, selection: Binding<V?>) where V : Hashable
+
+    /// Creates an instance that presents `destination` when `selection` is set
+    /// to `tag`, with a `Text` label generated from a title string.
+    public init<S>(_ title: S, destination: Destination) where S : StringProtocol {
+        self.label = { Text(title) }
+        self.destination = destination
+        self.wrapInButton = true
+    }
     
 }
