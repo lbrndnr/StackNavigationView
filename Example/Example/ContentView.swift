@@ -22,6 +22,7 @@ struct ContentView: View {
             }
             Text("Empty Selection")
         }
+        .frame(minWidth: 600, minHeight: 400)
     }
     
     @ViewBuilder private func rootView(title: String) -> some View {
@@ -31,10 +32,9 @@ struct ContentView: View {
                 .bold()
             Spacer()
                 .frame(height: 40)
-            StackNavigationLink(destination: ChildView(sidebar: title, level: 1)) {
-                Text("Next")
-            }
+            StackNavigationLink("Next", destination: ChildView(sidebar: title, level: 1))
         }
+        .padding(20)
         .navigationTitle(title)
     }
 }

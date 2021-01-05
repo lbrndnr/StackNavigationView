@@ -22,9 +22,7 @@ struct ChildView: View {
                 .font(.system(size: 20))
             Spacer()
                 .frame(height: 40)
-            StackNavigationLink(destination: ChildView(sidebar: sidebar, level: level+1)) {
-                Text("Next")
-            }
+            StackNavigationLink("Next", destination: ChildView(sidebar: sidebar, level: level+1))
         }
         .padding(20)
         .navigationTitle("Detail \(level)")
