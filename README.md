@@ -9,7 +9,7 @@ As of SwiftUI v2, `NavigationView` only supports a simple sidebar selection. Thi
 ![Demo](https://raw.githubusercontent.com/lbrndnr/StackNavigationView/master/demo.gif)
 
 ## Usage
-The interface of `StackNavigationView` is very similar to the one of `NavigationView`, just make sure not to use `NavigationLink` inside of `StackNavigationView` though, it will result in undefined behaviour. You'll find the full example [here](https://github.com/lbrndnr/StackNavigationView/tree/master/Example). 
+The interface of `StackNavigationView` is very similar to the one of `NavigationView`, just make sure not to use `NavigationLink` inside of `StackNavigationView` though, it will result in undefined behaviour. You'll find the full example [here](https://github.com/lbrndnr/StackNavigationView/tree/master/Example/Example). 
 
 ```swift
 struct ContentView: View {
