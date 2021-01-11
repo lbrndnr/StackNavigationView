@@ -22,7 +22,7 @@ struct CurrentViewKey: EnvironmentKey {
 
 struct ModalViewKey: EnvironmentKey {
     
-    static let defaultValue: AnyView? = nil
+    static let defaultValue: ModalView? = nil
     
 }
 
@@ -38,7 +38,7 @@ extension EnvironmentValues {
         set { self[CurrentViewKey.self] = newValue }
     }
     
-    var modalView: AnyView? {
+    var modalView: ModalView? {
         get { self[ModalViewKey.self] }
         set { self[ModalViewKey.self] = newValue }
     }

@@ -15,6 +15,8 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
     @State private var pushed: [(AnyView?, V?)]
     @State private var popped = [(AnyView?, V?)]()
     
+    @Environment(\.modalView) private var modalView: ModalView?
+    
     private var canGoBack: Bool { pushed.count > 1 }
     private var canGoForward: Bool { popped.count > 0 }
     private var selection: Binding<V?>?
@@ -23,6 +25,12 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
         NavigationView(content: content)
             .environment(\.push, push)
             .environment(\.currentView, pushed.last?.0)
+            .onChange(of: modalView) { [modalView] newModal in
+                modalView?.item.wrappedValue = nil
+                if let view = newModal?.content {
+                    push(view, tag: nil)
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button(action: goBack, label: {
@@ -52,9 +60,16 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
         self._pushed = State(initialValue: [(nil, selection.wrappedValue)])
     }
     
-    public func modal<T: View>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> T) -> some View {
-        let view = isPresented.wrappedValue ? AnyView(content()) : nil
-        return environment(\.modalView, view)
+    public func stack<Content: View>(item: Binding<Int?>, @ViewBuilder content: @escaping () -> Content) -> some View {
+        return transformEnvironment(\.modalView) { modalView in
+            if item.wrappedValue != nil {
+                let content = content().id(UUID())
+                modalView = ModalView(item: item, content: AnyView(content))
+            }
+            else {
+                modalView = nil
+            }
+        }
     }
     
     private func push(_ content: AnyView, tag: Any?) {
@@ -71,6 +86,9 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
         popped.append((content, tag))
         if let tag = pushed.last?.1 {
             selection?.wrappedValue = tag
+        }
+        if let modalView = modalView {
+            modalView.item.wrappedValue = nil
         }
     }
     
