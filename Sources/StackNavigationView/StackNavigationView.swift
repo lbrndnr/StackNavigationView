@@ -73,8 +73,10 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
     }
     
     private func push(_ content: AnyView, tag: Any?) {
+        let view = AnyView(content.id(UUID()))
+        
         guard let tag = tag as? V? else { preconditionFailure() }
-        pushed.append((content, tag))
+        pushed.append((view, tag))
         popped.removeAll()
         if let tag = tag {
             selection?.wrappedValue = tag
