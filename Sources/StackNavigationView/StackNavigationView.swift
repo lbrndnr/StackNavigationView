@@ -10,7 +10,7 @@ import Combine
 
 public struct StackNavigationView<V: Hashable, Content: View>: View {
     
-    private var content: () -> Content
+    private var content: Content
     
     @State private var pushed: [(AnyView?, V?)]
     @State private var popped = [(AnyView?, V?)]()
@@ -22,7 +22,7 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
     private var selection: Binding<V?>?
     
     public var body: some View {
-        NavigationView(content: content)
+        NavigationView(content: { content })
             .environment(\.push, push)
             .environment(\.currentView, pushed.last?.0)
             .onChange(of: modalView) { [modalView] newModal in
@@ -49,21 +49,21 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
             }
     }
     
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
+    public init(@ViewBuilder content: () -> Content) {
+        self.content = content()
         self._pushed = State(initialValue: [])
     }
     
-    public init(selection: Binding<V?>, @ViewBuilder content: @escaping () -> Content) {
-        self.content = content
+    public init(selection: Binding<V?>, @ViewBuilder content: () -> Content) {
+        self.content = content()
         self.selection = selection
         self._pushed = State(initialValue: [(nil, selection.wrappedValue)])
     }
     
-    public func stack<Content: View>(item: Binding<Int?>, @ViewBuilder content: @escaping () -> Content) -> some View {
+    public func stack<Content: View>(item: Binding<Int?>, @ViewBuilder content: () -> Content) -> some View {
+        let content = content().id(UUID())
         return transformEnvironment(\.modalView) { modalView in
             if item.wrappedValue != nil {
-                let content = content().id(UUID())
                 modalView = ModalView(item: item, content: AnyView(content))
             }
             else {

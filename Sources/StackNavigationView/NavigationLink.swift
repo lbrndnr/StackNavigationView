@@ -81,7 +81,7 @@ extension SidebarNavigationLink where Label == Text {
 
 public struct StackNavigationLink<Label: View, Destination: View>: View {
     
-    private var label: () -> Label
+    private var label: Label
     private var destination: Destination
     private var wrapInButton = false
     
@@ -93,16 +93,16 @@ public struct StackNavigationLink<Label: View, Destination: View>: View {
         }
         
         if wrapInButton {
-            Button(action: action, label: label)
+            Button(action: action, label: { label })
         }
         else {
-            label().onTapGesture(perform: action)
+            label.onTapGesture(perform: action)
         }
     }
 
     /// Creates an instance that presents `destination`.
-    public init(destination: Destination, @ViewBuilder label: @escaping () -> Label) {
-        self.label = label
+    public init(destination: Destination, @ViewBuilder label: () -> Label) {
+        self.label = label()
         self.destination = destination
     }
 //
@@ -145,7 +145,7 @@ extension StackNavigationLink where Label == Text {
     /// Creates an instance that presents `destination` when `selection` is set
     /// to `tag`, with a `Text` label generated from a title string.
     public init<S>(_ title: S, destination: Destination) where S : StringProtocol {
-        self.label = { Text(title) }
+        self.label = Text(title)
         self.destination = destination
         self.wrapInButton = true
     }
