@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct SidebarNavigationLink<Label, Destination, V: Hashable> : View where Label : View, Destination : View {
     
-    var label: String
+    var label: Label
     var destination: Destination
     var tag: V?
     var selection: Binding<V?>?
@@ -22,7 +22,7 @@ public struct SidebarNavigationLink<Label, Destination, V: Hashable> : View wher
                 push(AnyView(destination), tag)
             })
             
-            NavigationLink(label, destination: CurrentView(defaultView: destination), tag: tag, selection: binding)
+            NavigationLink(destination: CurrentView(defaultView: destination), tag: tag, selection: binding, label: { label })
         }
     }
 
@@ -37,12 +37,14 @@ public struct SidebarNavigationLink<Label, Destination, V: Hashable> : View wher
 //        self.destination = destination
 //    }
 //
-//    /// Creates an instance that presents `destination` when `selection` is set
-//    /// to `tag`.
-//    public init<V>(destination: Destination, tag: V, selection: Binding<V?>, @ViewBuilder label: @escaping () -> Label) where V : Hashable {
-//        self.label = label
-//        self.destination = destination
-//    }
+    /// Creates an instance that presents `destination` when `selection` is set
+    /// to `tag`.
+    public init(destination: Destination, tag: V, selection: Binding<V?>, @ViewBuilder label: () -> Label) where V : Hashable {
+        self.label = label()
+        self.destination = destination
+        self.tag = tag
+        self.selection = selection
+    }
     
 }
 
@@ -71,7 +73,7 @@ extension SidebarNavigationLink where Label == Text {
     /// Creates an instance that presents `destination` when `selection` is set
     /// to `tag`, with a `Text` label generated from a title string.
     public init<S>(_ title: S, destination: Destination, tag: V, selection: Binding<V?>) where S : StringProtocol {
-        self.label = String(title)
+        self.label = Text(title)
         self.destination = destination
         self.tag = tag
         self.selection = selection
