@@ -6,6 +6,14 @@
 //
 
 import SwiftUI
+
+#if os(iOS)
+    
+import UIKit
+typealias StackNavigationView = NavigationView
+    
+#elseif os(OSX)
+
 import Combine
 
 public struct StackNavigationView<V: Hashable, Content: View>: View {
@@ -103,3 +111,5 @@ public struct StackNavigationView<V: Hashable, Content: View>: View {
     }
     
 }
+
+#endif
