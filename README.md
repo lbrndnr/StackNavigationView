@@ -3,6 +3,8 @@
 [![Twitter: @lbrndnr](https://img.shields.io/badge/contact-@lbrndnr-blue.svg?style=flat)](https://twitter.com/lbrndnr)
 [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/lbrndnr/StackNavigationView/blob/master/LICENSE)
 
+⚠️ SwiftUI now supports [NavigationStack](https://developer.apple.com/documentation/swiftui/navigationstack), making this repo redundant for new projects. I recommend to only use this if you have to support macOS 11 or 12. ⚠️
+
 ## About
 As of SwiftUI v2, `NavigationView` only supports a simple sidebar selection. This makes it impossible to push new views onto the view hierarchy, as one could do e.g. with `UINavigationController`. This project is a workaround that builds upon `NavigationView` to support complex view hierarchies.
 
